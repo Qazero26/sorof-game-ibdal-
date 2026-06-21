@@ -1,1 +1,77 @@
-# sorof-game-ibdal-
+=========================================================
+PANDUAN PENGGUNAAN: GAME UJI MINDA IBDAL (USTAZ FAKHRULLAH)
+
+Sistem ini mempunyai 3 fail utama yang perlu diletakkan di dalam SATU FOLDER yang sama:
+
+ibdal-game.html     -> Fail game utama (untuk pelajar main)
+
+kemaskini_data.py   -> Fail sistem Python (untuk ustaz update soalan)
+
+data.csv            -> Fail database soalan (dari Excel)
+
+LANGKAH 1: CARA TAMBAH / UBAH SOALAN (BINA FAIL CSV)
+
+Buka Microsoft Excel (Blank workbook).
+
+Di baris pertama (Row 1), taipkan tepat-tepat 4 tajuk ini:
+
+Kotak A1: Perkataan
+
+Kotak B1: Asal
+
+Kotak C1: Petunjuk
+
+Kotak D1: Sebab
+
+Masukkan senarai soalan di baris kedua dan ke bawah.
+
+PESANAN: Pastikan tiada jarak/space di hujung perkataan dalam lajur 'Asal' dan 'Perkataan'.
+
+Selepas siap, klik File > Save As.
+
+Pada pilihan format/jenis fail, SANGAT PENTING untuk ustaz pilih:
+👉 "CSV UTF-8 (Comma delimited) (*.csv)"
+(Pilihan UTF-8 ini yang memastikan tulisan Arab tidak rosak).
+
+Namakan fail tersebut sebagai: data.csv
+
+Simpan di dalam folder yang sama dengan fail HTML dan Python tadi.
+
+TUTUP Microsoft Excel tersebut.
+
+LANGKAH 2: MASUKKAN SOALAN KE DALAM GAME (GUNA PYTHON)
+
+Pastikan fail 'data.csv', 'ibdal-game.html', dan 'kemaskini_data.py' berada dalam folder yang sama.
+
+Double-click fail 'kemaskini_data.py'.
+
+Satu kotak hitam (Command Prompt) akan keluar dan memaparkan:
+"Berjaya membaca XX soalan dari CSV."
+"✅ BERJAYA! Fail 'ibdal-game.html' telah dikemas kini..."
+
+Tekan Enter pada keyboard untuk tutup kotak tersebut.
+
+Selesai! Soalan terbaru ustaz telah selamat dimasukkan ke dalam fail HTML.
+
+LANGKAH 3: CARA KONGSI KEPADA PELAJAR
+
+Ustaz HANYA PERLU HANTAR SATU FAIL SAHAJA kepada pelajar, iaitu fail "ibdal-game.html".
+
+Boleh hantar melalui WhatsApp, Telegram, atau Google Classroom.
+
+Pelajar cuma perlu klik pada fail tersebut dan ia akan terus terbuka di dalam browser (Chrome/Safari) telefon bimbit mereka tanpa perlu install apa-apa aplikasi tambahan.
+
+=========================================================
+PENYELESAIAN MASALAH (TROUBLESHOOTING)
+
+Masalah 1: Tulisan Arab jadi simbol pelik / tanda soal (???).
+Sebab: Ustaz terlupa pilih "CSV UTF-8" semasa Save As di Excel. Buka semula Excel dan Save As guna format yang betul.
+
+Masalah 2: Bila run Python, dia tulis "Format CSV salah!".
+Sebab: Tajuk di baris nombor 1 salah eja, atau ada terselit "space" (contoh: "Perkataan " atau " Asal"). Baiki semula di Excel.
+
+Masalah 3: Bila run Python, dia tulis "Fail data.csv tidak dijumpai".
+Sebab: Fail excel tersebut ustaz tak save dalam folder yang sama dengan fail Python, atau tersalah letak nama (contohnya jadi data.csv.csv).
+
+Masalah 4: Game gagal tunjuk jawapan betul walaupun pelajar tarik huruf yang betul.
+Sebab: Ada jarak kosong (space) tersembunyi di hujung ejaan lajur 'Asal' semasa ditaip di Excel. Buang space tersebut.
