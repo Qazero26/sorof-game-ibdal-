@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="ms" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uji Minda Ibdal: Cari Asal Perkataan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            background: linear-gradient(-45deg, #ecfdf5, #a7f3d0, #6ee7b7, #10b981);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
+        }
+        
+        .arabic-text {
+            font-family: 'Amiri', serif;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        @keyframes float-reverse {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(20px) rotate(-5deg); }
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.5); }
+            70% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px) rotate(-5deg); }
+            40%, 80% { transform: translateX(10px) rotate(5deg); }
+        }
+        @keyframes comboGlow {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.5)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.9)); transform: scale(1.1) rotate(3deg); }
+        }
+        @keyframes snapIn {
+            0% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .fade-in { animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .pop-in { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        .combo-active { animation: comboGlow 1s infinite alternate; color: #ef4444 !important; font-weight: 900;}
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tile-3d {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 0 #047857, 0 10px 15px rgba(0,0,0,0.1);
+        }
+        .tile-3d:active, .tile-3d.is-dragged {
+            transform: translateY(6px) scale(0.95);
+            box-shadow: 0 0px 0 #047857, 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .bg-shape {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            filter: blur(8px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        #particles-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #6ee7b7; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4">
+
+    <div class="bg-shape w-64 h-64 top-[-10%] left-[-10%]" style="animation: float 8s infinite;"></div>
+    <div class="bg-shape w-96 h-96 bottom-[-10%] right-[-10%]" style="animation: float-reverse 12s infinite; background: rgba(255,255,255,0.3);"></div>
+    <div class="bg-shape w-48 h-48 top-[40%] left-[80%]" style="animation: float 10s infinite;"></div>
+
+    <div id="particles-container"></div>
+
+    <div id="game-container" class="max-w-5xl w-full glass-card rounded-3xl overflow-hidden pop-in relative z-10 transition-transform duration-300">
+        
+        <!-- Lencana Ustaz Fakhrullah -->
+        <div class="absolute top-4 left-4 bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-emerald-100 flex items-center gap-2 z-20">
+            <span class="text-2xl">👨🏻‍🏫</span>
+            <span class="font-bold text-xs text-emerald-800 leading-tight">Disediakan oleh<br>Ustaz Fakhrullah</span>
+        </div>
+
+        <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 text-white p-4 sm:p-5 text-center relative overflow-hidden shadow-lg" dir="rtl">
+            <div class="absolute inset-0 bg-white/10" style="background-image: radial-gradient(circle, rgba(255,255,255,0.2) 2px, transparent 2px); background-size: 20px 20px;"></div>
+            <h1 class="text-3xl sm:text-4xl font-black mb-2 drop-shadow-lg relative z-10">لعبة تحدي الإبدال</h1>
+            <p class="text-emerald-100 text-md sm:text-lg font-medium relative z-10 arabic-text">(الأصل قبل الإبدال) Uji Minda: Tarik dan Lepas</p>
+        </div>
+
+        <div id="start-screen" class="p-6 sm:p-10 text-center block fade-in mt-6">
+            <div class="relative inline-block mb-6">
+                <div class="absolute inset-0 bg-yellow-300 rounded-full blur-xl opacity-40 animate-pulse"></div>
+                <span class="text-6xl relative z-10 drop-shadow-xl block hover:scale-110 transition-transform cursor-pointer">🎯</span>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Assalamualaikum! Jom Uji Minda Ibdal! 🤩</h2>
+            <p class="text-gray-600 mb-8 text-md sm:text-lg font-medium max-w-xl mx-auto">
+                Caranya mudah je! Antum cuma perlu tarik huruf asal <strong>(Alif, Waw, atau Ya)</strong> masuk ke dalam petak jawapan. Jawab betul-betul supaya dapat markah kombo tinggi-tinggi tau!
+            </p>
+            <div id="no-data-warning" class="hidden text-red-600 font-bold mb-4 bg-red-100 p-3 rounded-lg max-w-md mx-auto">
+                Sila upload data menggunakan Python dahulu!
+            </div>
+            <button onclick="startGame()" class="group relative inline-flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 px-10 rounded-full text-xl transition-all duration-300 shadow-[0_6px_0_#047857] hover:shadow-[0_3px_0_#047857] hover:translate-y-1 active:shadow-none active:translate-y-2 ring-4 ring-emerald-500/30 hover:ring-emerald-500/50">
+                <span class="mr-3">Jom Mula!</span>
+                <span class="transform group-hover:translate-x-2 transition-transform text-2xl">🚀</span>
+            </button>
+        </div>
+
+        <div id="game-screen" class="p-4 sm:p-6 hidden">
+            
+            <div class="mb-4">
+                <div class="flex justify-between items-center text-sm font-bold mb-2">
+                    <div class="flex gap-2">
+                        <span id="score-display" class="bg-white px-3 py-1.5 rounded-full shadow-sm text-emerald-700 border border-emerald-100 flex items-center gap-1">
+                            <span>⭐</span> <span id="score-val">0</span>
+                        </span>
+                        <span id="combo-display" class="bg-orange-50 px-3 py-1.5 rounded-full shadow-sm text-orange-400 border border-orange-100 flex items-center gap-1 transition-all duration-300 opacity-50 grayscale">
+                            <span>🔥</span> <span id="combo-val">Kombo: 0</span>
+                        </span>
+                    </div>
+                    <span id="question-counter" class="bg-gray-100 px-3 py-1.5 rounded-full text-gray-600 border border-gray-200 shadow-inner" dir="ltr">
+                        1/?
+                    </span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3 shadow-inner overflow-hidden border border-gray-300">
+                    <div id="progress-bar" class="bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 h-full rounded-full transition-all duration-700 relative" style="width: 10%;">
+                        <div class="absolute inset-0 bg-white/20 w-full h-full" style="background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent); background-size: 1rem 1rem;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 lg:gap-6 items-stretch">
+                
+                <div class="flex-1 flex flex-col justify-center items-center gap-4 bg-white/40 p-4 rounded-3xl border border-white/60 shadow-sm relative">
+                    
+                    <div class="text-center w-full mt-2">
+                        <div class="inline-block relative group">
+                            <div class="absolute -inset-2 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-2xl blur-lg opacity-40 group-hover:opacity-60 transition duration-500"></div>
+                            <div id="current-word" class="relative arabic-text text-5xl sm:text-7xl font-bold text-emerald-900 bg-white/90 backdrop-blur py-4 px-10 rounded-2xl border-2 border-white shadow-md transform transition-transform" dir="rtl">
+                                -
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex justify-center items-center space-x-2 space-x-reverse text-5xl sm:text-6xl arabic-text bg-gradient-to-b from-gray-50 to-gray-100 py-6 px-4 rounded-3xl border-2 border-gray-200 shadow-inner relative overflow-hidden" dir="rtl">
+                        <span id="word-stem" class="text-gray-800 mt-2 z-10 drop-shadow-md"></span>
+                        <div id="dropzone" class="w-20 h-24 sm:w-24 sm:h-28 border-4 border-dashed border-gray-400 rounded-2xl flex items-center justify-center bg-white/50 text-gray-300 transition-all duration-300 z-10 font-bold relative shadow-sm">
+                            <span class="pb-3 sm:pb-4">؟</span>
+                            <div class="absolute inset-0 bg-emerald-400/30 rounded-xl opacity-0 scale-50 transition-all duration-300" id="dropzone-glow"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full bg-blue-50/90 backdrop-blur-sm p-3 rounded-2xl border border-blue-200 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-12 h-12 bg-blue-400/10 rounded-full blur-xl"></div>
+                        <h3 class="text-blue-800 text-xs font-bold mb-2 uppercase tracking-wider flex items-center justify-center gap-1">
+                            <span class="text-sm">🔍</span> Petunjuk (الجذر)
+                        </h3>
+                        
+                        <button id="show-clue-btn" onclick="toggleClue()" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-[0_4px_0_#1e40af] hover:shadow-[0_2px_0_#1e40af] hover:translate-y-1 active:translate-y-2 w-full flex justify-center items-center gap-2">
+                            <span>Papar Petunjuk</span> <span>👁️</span>
+                        </button>
+                        
+                        <div id="current-jazar" class="text-center arabic-text text-4xl sm:text-5xl font-black text-blue-900 tracking-[0.3em] hidden transition-all duration-500 scale-90 opacity-0 drop-shadow-sm py-1" dir="rtl">
+                            -
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-5/12 flex flex-col justify-start items-center bg-white/40 p-4 rounded-3xl border border-white/60 shadow-sm">
+                    
+                    <div id="drag-container" class="text-center w-full transition-opacity duration-300 relative z-20 mb-4">
+                        <p class="text-xs text-gray-500 mb-3 font-bold flex items-center justify-center gap-1 uppercase tracking-wide">
+                            <span class="animate-bounce">👇</span> Tarik huruf ke kotak <span class="animate-bounce">👇</span>
+                        </p>
+                        <div class="flex justify-center gap-4" id="draggables">
+                            <!-- Inject via JS -->
+                        </div>
+                    </div>
+
+                    <div id="feedback" class="w-full text-center text-md sm:text-lg font-bold flex items-center justify-center rounded-2xl transition-all duration-300 opacity-0 scale-95 hidden mb-3">
+                    </div>
+                    
+                    <div id="explanation-box" class="w-full hidden bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-4 text-center transition-all duration-500 shadow-md mb-4 flex-1 flex flex-col justify-center">
+                        <div class="inline-flex items-center justify-center bg-emerald-200 text-emerald-800 rounded-full px-3 py-1 mb-2 text-[10px] font-black uppercase tracking-widest gap-1 self-center">
+                            <span>💡</span> Penjelasan
+                        </div>
+                        <p id="explanation-text" class="arabic-text text-xl sm:text-2xl text-emerald-900 leading-relaxed font-bold drop-shadow-sm" dir="rtl"></p>
+                    </div>
+                    
+                    <div class="mt-auto w-full flex justify-center h-14 items-end">
+                        <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-black py-3 px-6 rounded-full text-lg transition-all duration-300 shadow-[0_5px_0_#0f766e] hover:translate-y-1 hover:shadow-[0_2px_0_#0f766e] active:shadow-none active:translate-y-2 flex justify-center items-center gap-2">
+                            <span>Seterusnya</span> <span class="text-xl">➡️</span>
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div id="result-screen" class="p-6 sm:p-10 text-center hidden relative overflow-hidden">
+            <h2 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 mb-6 drop-shadow-sm">Permainan Tamat!</h2>
+            
+            <div class="relative inline-block mb-6 group">
+                <div class="absolute inset-0 bg-yellow-400 rounded-full blur-3xl opacity-60 animate-pulse"></div>
+                <div class="arabic-text text-[80px] relative z-10 drop-shadow-2xl group-hover:scale-110 transition-transform duration-500" id="trophy-icon">🏆</div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 max-w-md mx-auto mb-6">
+                <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 shadow-sm">
+                    <p class="text-gray-500 font-bold text-xs sm:text-sm mb-1">Markah Akhir</p>
+                    <p class="text-3xl font-black text-emerald-600" id="final-score" dir="ltr">0/0</p>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 shadow-sm">
+                    <p class="text-gray-500 font-bold text-xs sm:text-sm mb-1">Kombo Tertinggi</p>
+                    <p class="text-3xl font-black text-orange-500 flex items-center justify-center gap-1">
+                        <span>🔥</span> <span id="final-combo">0</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-4 sm:p-6 rounded-2xl border border-gray-200 mb-8 shadow-inner w-full max-w-md mx-auto">
+                <p id="result-message" class="text-lg sm:text-xl text-gray-800 font-bold leading-relaxed"></p>
+            </div>
+            
+            <button onclick="restartGame()" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black py-3 px-10 rounded-full text-xl transition-all duration-300 shadow-[0_6px_0_#047857] hover:shadow-[0_3px_0_#047857] hover:translate-y-1 active:shadow-none active:translate-y-2 inline-flex items-center gap-3 ring-4 ring-emerald-500/20">
+                <span class="text-2xl">🔄</span> <span>Main Semula</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- BEGIN IBDAL DATA ---
+        let ibdalData = [
+            {
+                        "Perkataan": "سَمَاء",
+                        "Asal": "سَماو",
+                        "Petunjuk": "يَسْمُو / سَمُو",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "بِنَاء",
+                        "Asal": "بِناي",
+                        "Petunjuk": "بَنَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "دُعَاء",
+                        "Asal": "دُعاو",
+                        "Petunjuk": "يَدْعُو / دَعُو",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "جَزَاء",
+                        "Asal": "جَزاي",
+                        "Petunjuk": "جَزَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "كِسَاء",
+                        "Asal": "كِساو",
+                        "Petunjuk": "كَسُو / يَكْسُو",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "غِطَاء",
+                        "Asal": "غِطاو",
+                        "Petunjuk": "غَطَو / يَغْطُو",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "رِدَاء",
+                        "Asal": "رِداو",
+                        "Petunjuk": "رِدَو / يَرْدُو",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "حِذَاء",
+                        "Asal": "حِذاو",
+                        "Petunjuk": "حَذَو / يَحْذُو",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "وَفَاء",
+                        "Asal": "وَفاي",
+                        "Petunjuk": "وَفَى / يَفُو",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "بَقَاء",
+                        "Asal": "بَقاي",
+                        "Petunjuk": "بَقَى / يَقُو",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "فَنَاء",
+                        "Asal": "فَناي",
+                        "Petunjuk": "فَنَى / يَنُو",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "كِسَاء",
+                        "Asal": "كِساي",
+                        "Petunjuk": "كَسَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "عَطَاء",
+                        "Asal": "عَطاو",
+                        "Petunjuk": "عَطَو / يَعْطُو",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "قَضَاء",
+                        "Asal": "قَضاي",
+                        "Petunjuk": "قَضَى / يَقْضُو",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "دَوَاء",
+                        "Asal": "دَواي",
+                        "Petunjuk": "دَوَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "شَوَاء",
+                        "Asal": "شَواي",
+                        "Petunjuk": "شَوَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "ثَوَاء",
+                        "Asal": "ثَواي",
+                        "Petunjuk": "ثَوَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "لِوَاء",
+                        "Asal": "لِواي",
+                        "Petunjuk": "لَوَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "رَجَاء",
+                        "Asal": "رَجاو",
+                        "Petunjuk": "رَجَو / يَرْجُو",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "ابْتِدَاء",
+                        "Asal": "ابْتِداي",
+                        "Petunjuk": "ابْتَدَو / ابْتَدَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "انْتِهاء",
+                        "Asal": "انْتِهاو",
+                        "Petunjuk": "انْتَهَو / انْتَهَى",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "اسْتِخْلَاء",
+                        "Asal": "اسْتِخْلاي",
+                        "Petunjuk": "اسْتَخْلَو / اسْتَخْلَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "ابْتِعَاء",
+                        "Asal": "ابْتِعاو",
+                        "Petunjuk": "ابْتَعَو / ابْتَعَى",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "انْتِقَاء",
+                        "Asal": "انْتِقاو",
+                        "Petunjuk": "انْتَقَو / انْتَقَى",
+                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+            },
+            {
+                        "Perkataan": "اسْتِعَاء",
+                        "Asal": "اسْتِعاي",
+                        "Petunjuk": "اسْتَعَو / اسْتَعَى",
+                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+            }
+];
+        // --- END IBDAL DATA ---
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let combo = 0;
+        let highestCombo = 0;
+        let totalQuestions = 0; 
+        
+        let activeDragElement = null;
+        let ghostElement = null;
+        let isMagnetized = false;
+
+        let synth, polySynth, fmSynth;
+        let audioInitialized = false;
+
+        async function initAudio() {
+            if (audioInitialized) return;
+            await Tone.start();
+            synth = new Tone.Synth().toDestination();
+            polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+            fmSynth = new Tone.FMSynth().toDestination();
+            
+            synth.volume.value = -8;
+            polySynth.volume.value = -8;
+            fmSynth.volume.value = -5;
+            audioInitialized = true;
+        }
+
+        function playSound(type) {
+            if (!audioInitialized) return;
+            const now = Tone.now();
+            try {
+                switch(type) {
+                    case 'pickup':
+                        synth.triggerAttackRelease("G4", "32n"); break;
+                    case 'magnet':
+                        synth.triggerAttackRelease("C5", "32n"); break;
+                    case 'drop':
+                        synth.triggerAttackRelease("E5", "16n"); break;
+                    case 'correct':
+                        polySynth.triggerAttackRelease(["C5", "E5", "G5"], "8n"); break;
+                    case 'combo':
+                        fmSynth.triggerAttackRelease("C5", "8n", now);
+                        fmSynth.triggerAttackRelease("E5", "8n", now + 0.1);
+                        fmSynth.triggerAttackRelease("G5", "8n", now + 0.2);
+                        fmSynth.triggerAttackRelease("C6", "4n", now + 0.3);
+                        break;
+                    case 'wrong':
+                        fmSynth.triggerAttackRelease("C2", "8n"); break;
+                    case 'win':
+                        polySynth.triggerAttackRelease(["C4", "E4", "G4"], "8n", now);
+                        polySynth.triggerAttackRelease(["F4", "A4", "C5"], "8n", now + 0.2);
+                        polySynth.triggerAttackRelease(["G4", "B4", "D5"], "8n", now + 0.4);
+                        polySynth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "1n", now + 0.6);
+                        break;
+                }
+            } catch(e) { console.log("Audio not ready"); }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        async function startGame() {
+            if(!ibdalData || ibdalData.length === 0) {
+                document.getElementById('no-data-warning').classList.remove('hidden');
+                return;
+            }
+
+            await initAudio();
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            document.getElementById('game-screen').classList.add('fade-in');
+            
+            score = 0;
+            combo = 0;
+            highestCombo = 0;
+            currentQuestionIndex = 0;
+            
+            // Soalan ikut jumlah data dalam array
+            totalQuestions = ibdalData.length;
+            currentQuestions = shuffleArray([...ibdalData]);
+            
+            updateUI();
+            setupDraggables();
+            loadQuestion();
+        }
+
+        function setupDraggables() {
+            const container = document.getElementById('draggables');
+            container.innerHTML = '';
+            const letters = ['ا', 'و', 'ي'];
+            
+            letters.forEach(letter => {
+                const el = document.createElement('div');
+                el.className = 'tile-3d w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-3xl flex items-center justify-center text-4xl sm:text-5xl arabic-text font-black text-emerald-700 cursor-grab touch-none hover:bg-emerald-50 border-4 border-emerald-500 select-none relative overflow-hidden group';
+                el.innerHTML = `
+                    <div class="absolute inset-0 bg-white/50 w-full h-1/2 rounded-t-2xl"></div>
+                    <span class="relative z-10 drop-shadow-md group-hover:scale-110 transition-transform pb-2">${letter}</span>
+                `;
+                el.dataset.letter = letter;
+                el.addEventListener('pointerdown', handlePointerDown);
+                container.appendChild(el);
+            });
+        }
+
+        function loadQuestion() {
+            const questionData = currentQuestions[currentQuestionIndex];
+            
+            document.getElementById('question-counter').innerText = `${currentQuestionIndex + 1}/${totalQuestions}`;
+            const progressPercentage = ((currentQuestionIndex) / totalQuestions) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
+            
+            const wordEl = document.getElementById('current-word');
+            wordEl.innerText = questionData.Perkataan;
+            wordEl.classList.remove('pop-in');
+            void wordEl.offsetWidth; 
+            wordEl.classList.add('pop-in');
+
+            document.getElementById('current-jazar').innerText = questionData.Petunjuk;
+            
+            const jazarEl = document.getElementById('current-jazar');
+            jazarEl.classList.add('hidden', 'opacity-0', 'scale-90');
+            jazarEl.classList.remove('opacity-100', 'scale-100');
+            document.getElementById('show-clue-btn').classList.remove('hidden');
+            
+            const stem = questionData.Asal.slice(0, -1);
+            document.getElementById('word-stem').innerText = stem;
+            
+            const dropZone = document.getElementById('dropzone');
+            dropZone.innerHTML = '<span class="pb-3 sm:pb-4">؟</span> <div class="absolute inset-0 bg-emerald-400/30 rounded-xl opacity-0 scale-50 transition-all duration-300" id="dropzone-glow"></div>';
+            dropZone.className = 'w-20 h-24 sm:w-24 sm:h-28 border-4 border-dashed border-gray-400 rounded-2xl flex items-center justify-center bg-white/50 text-gray-300 transition-all duration-300 z-10 font-bold relative shadow-sm text-5xl sm:text-6xl';
+            dropZone.style.transform = 'scale(1)';
+            
+            const feedbackEl = document.getElementById('feedback');
+            feedbackEl.classList.add('hidden');
+            feedbackEl.innerText = '';
+            
+            const explanationBox = document.getElementById('explanation-box');
+            if(explanationBox) explanationBox.classList.add('hidden');
+            
+            document.getElementById('next-btn').classList.add('hidden');
+            
+            const dragContainer = document.getElementById('drag-container');
+            dragContainer.style.opacity = '1';
+            dragContainer.style.pointerEvents = 'auto';
+            dragContainer.style.filter = 'none';
+        }
+
+        function handlePointerDown(e) {
+            if (!document.getElementById('next-btn').classList.contains('hidden')) return;
+
+            e.preventDefault();
+            activeDragElement = e.target.closest('.tile-3d');
+            if(!activeDragElement) return;
+
+            playSound('pickup');
+            activeDragElement.classList.add('is-dragged');
+            
+            ghostElement = activeDragElement.cloneNode(true);
+            ghostElement.style.position = 'fixed';
+            ghostElement.style.zIndex = '1000';
+            ghostElement.style.opacity = '0.95';
+            ghostElement.style.margin = '0';
+            ghostElement.style.transform = 'translate(-50%, -50%) scale(1.15)'; 
+            ghostElement.style.left = e.clientX + 'px';
+            ghostElement.style.top = e.clientY + 'px';
+            ghostElement.style.pointerEvents = 'none';
+            ghostElement.style.boxShadow = '0 25px 30px -5px rgba(0, 0, 0, 0.3)';
+            document.body.appendChild(ghostElement);
+            
+            activeDragElement.style.opacity = '0.3'; 
+            isMagnetized = false;
+
+            document.addEventListener('pointermove', handlePointerMove, {passive: false});
+            document.addEventListener('pointerup', handlePointerUp);
+        }
+
+        function handlePointerMove(e) {
+            if (!ghostElement) return;
+            e.preventDefault(); 
+            
+            const dropZone = document.getElementById('dropzone');
+            const dropGlow = document.getElementById('dropzone-glow');
+            const rect = dropZone.getBoundingClientRect();
+            
+            const radiusX = rect.width * 0.8;
+            const radiusY = rect.height * 0.8;
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const dist = Math.sqrt(Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2));
+
+            if (dist < Math.max(radiusX, radiusY)) {
+                if (!isMagnetized) {
+                    playSound('magnet');
+                    isMagnetized = true;
+                    dropZone.classList.add('border-emerald-500', 'bg-emerald-50');
+                    dropZone.classList.remove('border-gray-400', 'bg-white/50');
+                    dropZone.style.transform = 'scale(1.05)';
+                    if(dropGlow) {
+                        dropGlow.classList.replace('opacity-0', 'opacity-100');
+                        dropGlow.classList.replace('scale-50', 'scale-100');
+                    }
+                }
+                ghostElement.style.left = centerX + 'px';
+                ghostElement.style.top = centerY + 'px';
+                ghostElement.style.transform = 'translate(-50%, -50%) scale(1.0)';
+            } else {
+                if (isMagnetized) {
+                    isMagnetized = false;
+                    dropZone.classList.remove('border-emerald-500', 'bg-emerald-50');
+                    dropZone.classList.add('border-gray-400', 'bg-white/50');
+                    dropZone.style.transform = 'scale(1)';
+                    if(dropGlow) {
+                        dropGlow.classList.replace('opacity-100', 'opacity-0');
+                        dropGlow.classList.replace('scale-100', 'scale-50');
+                    }
+                }
+                ghostElement.style.left = e.clientX + 'px';
+                ghostElement.style.top = e.clientY + 'px';
+                ghostElement.style.transform = 'translate(-50%, -50%) scale(1.15)';
+            }
+        }
+
+        function handlePointerUp(e) {
+            document.removeEventListener('pointermove', handlePointerMove);
+            document.removeEventListener('pointerup', handlePointerUp);
+            
+            if (!ghostElement) return;
+
+            const dropZone = document.getElementById('dropzone');
+            const rect = dropZone.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            document.body.removeChild(ghostElement);
+            ghostElement = null;
+            
+            if (activeDragElement) {
+                activeDragElement.style.opacity = '1';
+                activeDragElement.classList.remove('is-dragged');
+            }
+            
+            if (isMagnetized) {
+                playSound('drop');
+                checkAnswer(activeDragElement.dataset.letter, centerX, centerY);
+            }
+            
+            dropZone.classList.remove('border-emerald-500', 'bg-emerald-50');
+            dropZone.classList.add('border-gray-400', 'bg-white/50');
+            dropZone.style.transform = 'scale(1)';
+            const dropGlow = document.getElementById('dropzone-glow');
+            if(dropGlow) {
+                dropGlow.classList.replace('opacity-100', 'opacity-0');
+                dropGlow.classList.replace('scale-100', 'scale-50');
+            }
+            
+            activeDragElement = null;
+            isMagnetized = false;
+        }
+
+        function checkAnswer(droppedLetter, originX, originY) {
+            const questionData = currentQuestions[currentQuestionIndex];
+            const targetLetter = questionData.Asal.slice(-1); 
+            
+            const dropZone = document.getElementById('dropzone');
+            const feedbackEl = document.getElementById('feedback');
+            const explanationBox = document.getElementById('explanation-box');
+            const nextBtn = document.getElementById('next-btn');
+            const dragContainer = document.getElementById('drag-container');
+            const gameContainer = document.getElementById('game-container');
+            
+            feedbackEl.classList.remove('hidden', 'opacity-0', 'scale-95');
+            feedbackEl.classList.add('opacity-100', 'scale-100');
+            
+            if (droppedLetter === targetLetter) {
+                combo++;
+                if(combo > highestCombo) highestCombo = combo;
+                score++;
+                updateUI();
+                
+                if (combo >= 3) playSound('combo');
+                else playSound('correct');
+
+                createExplosion(originX, originY);
+                
+                dropZone.innerHTML = `<span class="relative z-10 pb-3 sm:pb-4">${droppedLetter}</span>`;
+                dropZone.className = 'w-20 h-24 sm:w-24 sm:h-28 border-4 border-emerald-500 rounded-2xl flex items-center justify-center bg-emerald-100 text-emerald-800 transition-all duration-300 mt-2 font-black shadow-[0_0_20px_rgba(16,185,129,0.5)] text-5xl sm:text-6xl';
+                dropZone.style.animation = 'snapIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+                
+                feedbackEl.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🎉</span>
+                        <div class="text-left leading-tight">
+                            <span class="block text-xl font-black text-emerald-800">Tepat Sekali!</span>
+                            ${combo > 1 ? `<span class="text-xs font-bold text-orange-500 bg-orange-100 px-1.5 py-0.5 rounded inline-block mt-0.5">🔥 Kombo x${combo}!</span>` : ''}
+                        </div>
+                    </div>
+                `;
+                feedbackEl.className = 'p-3 flex items-center justify-center rounded-2xl bg-emerald-100 text-emerald-800 transition-all duration-300 shadow-sm border-2 border-emerald-300 pop-in w-full mb-3';
+                
+                document.getElementById('explanation-text').innerText = questionData.Sebab;
+                explanationBox.classList.remove('hidden');
+                
+                // Tunjuk Clue (Petunjuk) automatik
+                const jazarEl = document.getElementById('current-jazar');
+                jazarEl.classList.remove('hidden', 'opacity-0', 'scale-90');
+                jazarEl.classList.add('opacity-100', 'scale-100');
+                document.getElementById('show-clue-btn').classList.add('hidden');
+                
+                dragContainer.style.opacity = '0.3';
+                dragContainer.style.pointerEvents = 'none';
+                
+                nextBtn.classList.remove('hidden');
+                nextBtn.classList.add('pop-in');
+                
+            } else {
+                combo = 0;
+                updateUI();
+                playSound('wrong');
+                
+                dropZone.classList.add('bg-red-100', 'border-red-500', 'text-red-600');
+                dropZone.innerHTML = `<span class="pb-3 sm:pb-4">${droppedLetter}</span>`;
+                gameContainer.classList.add('shake');
+                
+                setTimeout(() => {
+                    gameContainer.classList.remove('shake');
+                    if (dropZone.classList.contains('bg-red-100')) {
+                        dropZone.innerHTML = '<span class="pb-3 sm:pb-4">؟</span> <div class="absolute inset-0 bg-emerald-400/20 rounded-xl opacity-0 scale-50 transition-all duration-300" id="dropzone-glow"></div>';
+                        dropZone.classList.remove('bg-red-100', 'border-red-500', 'text-red-600');
+                        dropZone.classList.add('bg-white/50', 'border-gray-400', 'text-gray-300');
+                    }
+                }, 500);
+                
+                feedbackEl.innerHTML = `<span class="text-xl mr-1">❌</span> Salah! Sila lihat <strong>petunjuk</strong>.`;
+                feedbackEl.className = 'p-3 text-center text-sm font-bold flex items-center justify-center rounded-2xl bg-red-100 text-red-800 transition-all duration-300 shadow-sm border-2 border-red-300 w-full mb-3';
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('score-val').innerText = score;
+            const comboEl = document.getElementById('combo-display');
+            document.getElementById('combo-val').innerText = `Kombo: ${combo}`;
+            
+            if (combo >= 2) {
+                comboEl.classList.remove('opacity-50', 'grayscale');
+                comboEl.classList.add('opacity-100', 'combo-active');
+            } else {
+                comboEl.classList.add('opacity-50', 'grayscale');
+                comboEl.classList.remove('opacity-100', 'combo-active');
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < totalQuestions) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            playSound('win');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('pop-in');
+            
+            document.getElementById('progress-bar').style.width = '100%';
+            
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            createExplosion(cx, cy, 100);
+            setTimeout(() => createExplosion(cx - 100, cy + 50, 50), 400);
+            setTimeout(() => createExplosion(cx + 100, cy + 50, 50), 800);
+            
+            document.getElementById('final-score').innerText = `${score}/${totalQuestions}`;
+            document.getElementById('final-combo').innerText = highestCombo;
+            
+            const messageEl = document.getElementById('result-message');
+            const trophy = document.getElementById('trophy-icon');
+            
+            if (score === totalQuestions) {
+                trophy.innerText = "👑";
+                messageEl.innerHTML = "<strong>Luar Biasa! Taraf Maestro!</strong><br>Penguasaan Ibdal anda amat sempurna.";
+            } else if (score >= totalQuestions * 0.7) {
+                trophy.innerText = "🏆";
+                messageEl.innerHTML = "<strong>Hebat!</strong><br>Anda faham konsep Ibdal dengan sangat baik.";
+            } else if (score >= totalQuestions * 0.4) {
+                trophy.innerText = "👍";
+                messageEl.innerHTML = "<strong>Usaha yang memuaskan.</strong><br>Sila ulang kaji semula nota Ibdal untuk menjadi pakar.";
+            } else {
+                trophy.innerText = "💪";
+                messageEl.innerHTML = "<strong>Teruskan Berusaha!</strong><br>Jangan putus asa, baca nota dan cuba lagi.";
+            }
+        }
+
+        function restartGame() {
+            document.getElementById('result-screen').classList.remove('pop-in');
+            startGame();
+        }
+
+        function toggleClue() {
+            const jazarEl = document.getElementById('current-jazar');
+            jazarEl.classList.remove('hidden');
+            setTimeout(() => {
+                jazarEl.classList.remove('opacity-0', 'scale-90');
+                jazarEl.classList.add('opacity-100', 'scale-100');
+            }, 10);
+            document.getElementById('show-clue-btn').classList.add('hidden');
+        }
+
+        function createExplosion(x, y, particleCount = 40) {
+            const container = document.getElementById('particles-container');
+            const colors = ['#34d399', '#fbbf24', '#60a5fa', '#f87171', '#a78bfa', '#ffffff'];
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 8 + 4;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.backgroundColor = color;
+                
+                if(Math.random() > 0.5) particle.style.borderRadius = '2px';
+                
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                container.appendChild(particle);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 50 + Math.random() * 150;
+                const duration = 800 + Math.random() * 700;
+                
+                const destX = x + Math.cos(angle) * velocity;
+                const destY = y + Math.sin(angle) * velocity + 150; 
+                const rot = Math.random() * 520 - 260;
+                
+                particle.animate([
+                    { transform: `translate(-50%, -50%) rotate(0deg) scale(1)`, opacity: 1 },
+                    { transform: `translate(${destX - x}px, ${destY - y}px) rotate(${rot}deg) scale(0)`, opacity: 0 }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+                    fill: 'forwards'
+                });
+                
+                setTimeout(() => {
+                    if (particle.parentNode) particle.parentNode.removeChild(particle);
+                }, duration);
+            }
+        }
+    </script>
+</body>
+</html>
