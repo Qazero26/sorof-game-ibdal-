@@ -184,6 +184,7 @@
                             <span class="pb-3 sm:pb-4">؟</span>
                             <div class="absolute inset-0 bg-emerald-400/30 rounded-xl opacity-0 scale-50 transition-all duration-300" id="dropzone-glow"></div>
                         </div>
+                        <span id="word-stem-left" class="text-gray-800 mt-2 z-10 drop-shadow-md"></span>
                     </div>
                     
                     <div class="w-full bg-blue-50/90 backdrop-blur-sm p-3 rounded-2xl border border-blue-200 shadow-sm relative overflow-hidden">
@@ -196,7 +197,7 @@
                             <span>Papar Petunjuk</span> <span>👁️</span>
                         </button>
                         
-                        <div id="current-jazar" class="text-center arabic-text text-4xl sm:text-5xl font-black text-blue-900 tracking-[0.3em] hidden transition-all duration-500 scale-90 opacity-0 drop-shadow-sm py-1" dir="rtl">
+                        <div id="current-jazar" class="text-center arabic-text text-2xl sm:text-3xl font-bold text-blue-900 hidden transition-all duration-500 scale-90 opacity-0 drop-shadow-sm py-2 leading-relaxed" dir="rtl">
                             -
                         </div>
                     </div>
@@ -268,154 +269,460 @@
         // --- BEGIN IBDAL DATA ---
         let ibdalData = [
             {
-                        "Perkataan": "سَمَاء",
-                        "Asal": "سَماو",
-                        "Petunjuk": "يَسْمُو / سَمُو",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "سَمَاءٌ",
+                        "Asal": "سَمَاوٌ",
+                        "Petunjuk": "سَمَا - يَسْمُو - سُمُوٌّ",
+                        "Sebab": "إبدال الواو همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "بِنَاء",
-                        "Asal": "بِناي",
-                        "Petunjuk": "بَنَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "كِسَاءٌ",
+                        "Asal": "كِسَاوٌ",
+                        "Petunjuk": "كَسَا - يَكْسُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "دُعَاء",
-                        "Asal": "دُعاو",
-                        "Petunjuk": "يَدْعُو / دَعُو",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "أَعْدَاءٌ",
+                        "Asal": "أَعْدَاوٌ",
+                        "Petunjuk": "عَدُوٌّ (مفرد)",
+                        "Sebab": "إبدال الواو همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "جَزَاء",
-                        "Asal": "جَزاي",
-                        "Petunjuk": "جَزَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "رِضَاءٌ",
+                        "Asal": "رِضَاوٌ",
+                        "Petunjuk": "رَضِيَ - يَرْضَى - رِضْوَانٌ",
+                        "Sebab": "إبدال الواو همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "كِسَاء",
-                        "Asal": "كِساو",
-                        "Petunjuk": "كَسُو / يَكْسُو",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "عَلَاءٌ",
+                        "Asal": "عَلَاوٌ",
+                        "Petunjuk": "عَلَا - يَعْلُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "غِطَاء",
-                        "Asal": "غِطاو",
-                        "Petunjuk": "غَطَو / يَغْطُو",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "غَلَاءٌ",
+                        "Asal": "غَلَاوٌ",
+                        "Petunjuk": "غَلَا - يَعْلُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "رِدَاء",
-                        "Asal": "رِداو",
-                        "Petunjuk": "رِدَو / يَرْدُو",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "غِذَاءٌ",
+                        "Asal": "غِذَاوٌ",
+                        "Petunjuk": "غَذَا - يَغْذُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "حِذَاء",
-                        "Asal": "حِذاو",
-                        "Petunjuk": "حَذَو / يَحْذُو",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "نَمَاءٌ",
+                        "Asal": "نَمَاوٌ",
+                        "Petunjuk": "نَمَا - يَنْمُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "وَفَاء",
-                        "Asal": "وَفاي",
-                        "Petunjuk": "وَفَى / يَفُو",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "بَلَاءٌ",
+                        "Asal": "بَلَاوٌ",
+                        "Petunjuk": "بَلَا - يَبْلُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "بَقَاء",
-                        "Asal": "بَقاي",
-                        "Petunjuk": "بَقَى / يَقُو",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "غَزَّائِينَ",
+                        "Asal": "غَزَّاوِينَ",
+                        "Petunjuk": "غَزَا - يَغْزُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حكماً)"
             },
             {
-                        "Perkataan": "فَنَاء",
-                        "Asal": "فَناي",
-                        "Petunjuk": "فَنَى / يَنُو",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "عَدَّائِينَ",
+                        "Asal": "عَدَّاوِينَ",
+                        "Petunjuk": "عَدَا - يَعْدُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حكماً)"
             },
             {
-                        "Perkataan": "كِسَاء",
-                        "Asal": "كِساي",
-                        "Petunjuk": "كَسَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "اِصْطِفَاءَاتٌ",
+                        "Asal": "اِصْطِفَاوَاتٌ",
+                        "Petunjuk": "صَفَا - يَصْفُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حكماً)"
             },
             {
-                        "Perkataan": "عَطَاء",
-                        "Asal": "عَطاو",
-                        "Petunjuk": "عَطَو / يَعْطُو",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "إِصْغَاءَاتٌ",
+                        "Asal": "إِصْغَاوَاتٌ",
+                        "Petunjuk": "صَغَا - يَصْغُو (مضارع)",
+                        "Sebab": "إبدال الواو همزة (التطرف حكماً)"
             },
             {
-                        "Perkataan": "قَضَاء",
-                        "Asal": "قَضاي",
-                        "Petunjuk": "قَضَى / يَقْضُو",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "بِنَاءٌ",
+                        "Asal": "بِنَايٌ",
+                        "Petunjuk": "بَنَى - يَبْنِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "دَوَاء",
-                        "Asal": "دَواي",
-                        "Petunjuk": "دَوَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "قَضَاءٌ",
+                        "Asal": "قَضَايٌ",
+                        "Petunjuk": "قَضَى - يَقْضِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "شَوَاء",
-                        "Asal": "شَواي",
-                        "Petunjuk": "شَوَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "بُكَاءٌ",
+                        "Asal": "بُكَايٌ",
+                        "Petunjuk": "بَكَى - يَبْكِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "ثَوَاء",
-                        "Asal": "ثَواي",
-                        "Petunjuk": "ثَوَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "شِفَاءٌ",
+                        "Asal": "شِفَايٌ",
+                        "Petunjuk": "شَفَى - يَشْفِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "لِوَاء",
-                        "Asal": "لِواي",
-                        "Petunjuk": "لَوَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "ثَنَاءٌ",
+                        "Asal": "ثَنَايٌ",
+                        "Petunjuk": "ثَنَى - يَثْنِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "رَجَاء",
-                        "Asal": "رَجاو",
-                        "Petunjuk": "رَجَو / يَرْجُو",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "هِدَاءٌ",
+                        "Asal": "هِدَايٌ",
+                        "Petunjuk": "هَدَى - يَهْدِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "ابْتِدَاء",
-                        "Asal": "ابْتِداي",
-                        "Petunjuk": "ابْتَدَو / ابْتَدَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "رِثَاءٌ",
+                        "Asal": "رِثَايٌ",
+                        "Petunjuk": "رَثَى - يَرْثِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "انْتِهاء",
-                        "Asal": "انْتِهاو",
-                        "Petunjuk": "انْتَهَو / انْتَهَى",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "سَقَّاءٌ",
+                        "Asal": "سَقَّايٌ",
+                        "Petunjuk": "سَقَى - يَسْقِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حقيقة)"
             },
             {
-                        "Perkataan": "اسْتِخْلَاء",
-                        "Asal": "اسْتِخْلاي",
-                        "Petunjuk": "اسْتَخْلَو / اسْتَخْلَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "سَقَّاءَةٌ",
+                        "Asal": "سَقَّايَةٌ",
+                        "Petunjuk": "سَقَى - يَسْقِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حكماً)"
             },
             {
-                        "Perkataan": "ابْتِعَاء",
-                        "Asal": "ابْتِعاو",
-                        "Petunjuk": "ابْتَعَو / ابْتَعَى",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "بَنَّاؤُونَ",
+                        "Asal": "بَنَّايُونَ",
+                        "Petunjuk": "بَنَى - يَبْنِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حكماً)"
             },
             {
-                        "Perkataan": "انْتِقَاء",
-                        "Asal": "انْتِقاو",
-                        "Petunjuk": "انْتَقَو / انْتَقَى",
-                        "Sebab": "واو متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "مَشَّاءَاتٌ",
+                        "Asal": "مَشَّايَاتٌ",
+                        "Petunjuk": "مَشَى - يَمْشِي (مضارع)",
+                        "Sebab": "إبدال الياء همزة (التطرف حكماً)"
             },
             {
-                        "Perkataan": "اسْتِعَاء",
-                        "Asal": "اسْتِعاي",
-                        "Petunjuk": "اسْتَعَو / اسْتَعَى",
-                        "Sebab": "ياء متطرفة بعد ألف زائدة فقُلِبت همزة"
+                        "Perkataan": "حَمْرَاءُ",
+                        "Asal": "حَمْرَاا",
+                        "Petunjuk": "من حَمْرَى بألف مقصورة",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "صَفْرَاءُ",
+                        "Asal": "صَفْرَاا",
+                        "Petunjuk": "من صَفْرَى بألف مقصورة",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "خَضْرَاءُ",
+                        "Asal": "خَضْرَاا",
+                        "Petunjuk": "من خَضْرَى بألف مقصورة",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "صَحْرَاءُ",
+                        "Asal": "صَحْرَاا",
+                        "Petunjuk": "من صَحْرَى بألف مقصورة",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "حَسْنَاءُ",
+                        "Asal": "حَسْنَاا",
+                        "Petunjuk": "من حَسْنَى بألف مقصورة",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "جَرْدَاءُ",
+                        "Asal": "جَرْدَاا",
+                        "Petunjuk": "من جَرْدَى بألف مقصورة",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "بَيْدَاءُ",
+                        "Asal": "بَيْدَاا",
+                        "Petunjuk": "من بَيْدَى بألف مقصورة",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "سَمْرَاءُ",
+                        "Asal": "سَمْرَاا",
+                        "Petunjuk": "من سَمْرَى بألف مقصورة",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "عِجَائِزُ",
+                        "Asal": "عَجَاوِزُ",
+                        "Petunjuk": "عَجُوزٌ (مفرد)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "حَلَائِبُ",
+                        "Asal": "حَلَاوِبُ",
+                        "Petunjuk": "حَلُوبَةٌ (مفرد)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "عَرَائِسُ",
+                        "Asal": "عَرَاوِسُ",
+                        "Petunjuk": "عَرُوسٌ (مفرد)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "فَرَائِضُ",
+                        "Asal": "فَرَايِضُ",
+                        "Petunjuk": "فَرِيضَةٌ (مفرد)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "شَعَائِرُ",
+                        "Asal": "شَعَايِرُ",
+                        "Petunjuk": "شَعِيرَةٌ (مفرد)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "قَصَائِدُ",
+                        "Asal": "قَصَايِدُ",
+                        "Petunjuk": "قَصِيدَةٌ (مفرد)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "صَحَائِفُ",
+                        "Asal": "صَحَايِفُ",
+                        "Petunjuk": "صَحِيفَةٌ (مفرد)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "رَسَائِلُ",
+                        "Asal": "رَسَاالُ",
+                        "Petunjuk": "رِسَالَةٌ (مفرد)",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "حَمَائِمُ",
+                        "Asal": "حَمَاامُ",
+                        "Petunjuk": "حَمَامَةٌ (مفرد)",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "قَلَائِدُ",
+                        "Asal": "قَلَاادُ",
+                        "Petunjuk": "قِلَادَةٌ (مفرد)",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "سَحَائِبُ",
+                        "Asal": "سَحَاابُ",
+                        "Petunjuk": "سَحَابَةٌ (مفرد)",
+                        "Sebab": "إبدال الألف همزة"
+            },
+            {
+                        "Perkataan": "قَائِدٌ",
+                        "Asal": "قَاوِدٌ",
+                        "Petunjuk": "قَادَ - يَقُودُ (مضارع)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "ثَائِرٌ",
+                        "Asal": "ثَاوِرٌ",
+                        "Petunjuk": "ثَارَ - يَثُورُ (مضارع)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "دَائِمٌ",
+                        "Asal": "دَاوِمٌ",
+                        "Petunjuk": "دَامَ - يَدُومُ (مضارع)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "خَائِفٌ",
+                        "Asal": "خَاوِفٌ",
+                        "Petunjuk": "خَافَ - يَخَافُ (مضارع)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "قَائِلٌ",
+                        "Asal": "قَاوِلٌ",
+                        "Petunjuk": "قَالَ - يَقُولُ (مضارع)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "عَائِذٌ",
+                        "Asal": "عَاوِذٌ",
+                        "Petunjuk": "عَاذَ - يَعُوذُ (مضارع)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "صَائِمٌ",
+                        "Asal": "صَاوِمٌ",
+                        "Petunjuk": "صَامَ - يَصُومُ (مضارع)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "جَائِزٌ",
+                        "Asal": "جَاوِزٌ",
+                        "Petunjuk": "جَازَ - يَجُوزُ (مضارع)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "خَائِبٌ",
+                        "Asal": "خَايِبٌ",
+                        "Petunjuk": "خَابَ - يَخِيبُ (مضارع)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "ضَائِقٌ",
+                        "Asal": "ضَايِقٌ",
+                        "Petunjuk": "ضَاقَ - يَضِيقُ (مضارع)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "بَائِعٌ",
+                        "Asal": "بَايِعٌ",
+                        "Petunjuk": "بَاعَ - يَبِيعُ (مضارع)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "مَائِلٌ",
+                        "Asal": "مَايِلٌ",
+                        "Petunjuk": "مَالَ - يَمِيلُ (مضارع)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "سَائِرٌ",
+                        "Asal": "سَايِرٌ",
+                        "Petunjuk": "سَارَ - يَسِيرُ (مضارع)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "دَائِنٌ",
+                        "Asal": "دَايِنٌ",
+                        "Petunjuk": "دَانَ - يَدِينُ (مضارع)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "أَوَائِلُ",
+                        "Asal": "أَوَاوِلُ",
+                        "Petunjuk": "أَوَّلٌ (مفرد)",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "جَوَائِزُ",
+                        "Asal": "جَوَاوِزُ",
+                        "Petunjuk": "جَائِزَةٌ (مفرد) / جَازَ - يَجُوزُ",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "جَيَائِدُ",
+                        "Asal": "جَيَاوِدُ",
+                        "Petunjuk": "جَيِّدٌ (مفرد) / جَادَ - يَجُودُ",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "سَيَائِدُ",
+                        "Asal": "سَيَاوِدُ",
+                        "Petunjuk": "سَيِّدٌ (مفرد) / سَادَ - يَسُودُ",
+                        "Sebab": "إبدال الواو همزة"
+            },
+            {
+                        "Perkataan": "عَيَائِلُ",
+                        "Asal": "عَيَايِلُ",
+                        "Petunjuk": "عَيِّلٌ (مفرد)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "نَيَائِفُ",
+                        "Asal": "نَيَايِفُ",
+                        "Petunjuk": "نَيِّفٌ (مفرد)",
+                        "Sebab": "إبدال الياء همزة"
+            },
+            {
+                        "Perkataan": "أُولَى",
+                        "Asal": "وُولَى",
+                        "Petunjuk": "—",
+                        "Sebab": "(١) إذا كانت الواو الثانية ساكنة أصلية"
+            },
+            {
+                        "Perkataan": "أُوَلُ",
+                        "Asal": "وُوَلُ",
+                        "Petunjuk": "—",
+                        "Sebab": "(٢) إذا كانت الواو الثانية متحرّكة أصلية"
+            },
+            {
+                        "Perkataan": "أَوَاصِلُ",
+                        "Asal": "وَوَاصِلُ",
+                        "Petunjuk": "وَاصِلَة (مفرد)",
+                        "Sebab": "(٣) إذا كانت الواو الثانية متحرّكة منقلبة عن ألف زائدة"
+            },
+            {
+                        "Perkataan": "أَوَافِي",
+                        "Asal": "وَوَافِي",
+                        "Petunjuk": "وَافِيَة (مفرد)",
+                        "Sebab": "(٣) إذا كانت الواو الثانية متحرّكة منقلبة عن ألف زائدة"
+            },
+            {
+                        "Perkataan": "أَوَاقِي",
+                        "Asal": "وَوَاقِي",
+                        "Petunjuk": "وَاقِيَة (مفرد)",
+                        "Sebab": "(٣) إذا كانت الواو الثانية متحرّكة منقلبة عن ألف زائدة"
+            },
+            {
+                        "Perkataan": "أَوَاهِبُ",
+                        "Asal": "وَوَاهِبُ",
+                        "Petunjuk": "وَاهِبَة (مفرد)",
+                        "Sebab": "(٣) إذا كانت الواو الثانية متحرّكة منقلبة عن ألف زائدة"
+            },
+            {
+                        "Perkataan": "أَوَاعِدُ",
+                        "Asal": "وَوَاعِدُ",
+                        "Petunjuk": "وَاعِدَة (مفرد)",
+                        "Sebab": "(٣) إذا كانت الواو الثانية متحرّكة منقلبة عن ألف زائدة"
+            },
+            {
+                        "Perkataan": "أُوَيْصِلَةٌ",
+                        "Asal": "وُوَيْصِلَةٌ",
+                        "Petunjuk": "تصغير من وَاصِلَة",
+                        "Sebab": "(٣) إذا كانت الواو الثانية متحرّكة منقلبة عن ألف زائدة"
+            },
+            {
+                        "Perkataan": "أُوَيْفِيَةٌ",
+                        "Asal": "وُوَيْفِيَةٌ",
+                        "Petunjuk": "تصغير من وَافِيَة",
+                        "Sebab": "(٣) إذا كانت الواو الثانية متحرّكة منقلبة عن ألف زائدة"
+            },
+            {
+                        "Perkataan": "أُوَيْقِيَةٌ",
+                        "Asal": "وُوَيْقِيَةٌ",
+                        "Petunjuk": "تصغير من وَاقِيَة",
+                        "Sebab": "(٣) إذا كانت الواو الثانية متحرّكة منقلبة عن ألف زائدة"
+            },
+            {
+                        "Perkataan": "أُوفِيَ",
+                        "Asal": "وُوفِيَ",
+                        "Petunjuk": "وَافَى (بناء للمعلوم)",
+                        "Sebab": "إذا كانت الواو الثانية ساكنة زائدة بالبناء للمجهول"
+            },
+            {
+                        "Perkataan": "أُورِيَ",
+                        "Asal": "وُورِيَ",
+                        "Petunjuk": "وَارَى (بناء للمعلوم)",
+                        "Sebab": "إذا كانت الواو الثانية ساكنة زائدة بالبناء للمجهول"
+            },
+            {
+                        "Perkataan": "أُوصِلَ",
+                        "Asal": "وُوصِلَ",
+                        "Petunjuk": "وَاصَلَ (بناء للمعلوم)",
+                        "Sebab": "إذا كانت الواو الثانية ساكنة زائدة بالبناء للمجهول"
             }
 ];
         // --- END IBDAL DATA ---
@@ -530,6 +837,49 @@
             });
         }
 
+        // --- FUNGSI PINTAR DITAMBAH DI SINI ---
+        function getSplitData(perkataan, asal) {
+            const buangBaris = /[\u064B-\u065F]/g;
+            const bersihPerkataan = perkataan.replace(buangBaris, '');
+            const bersihAsal = asal.replace(buangBaris, '');
+            
+            let charIndexBersih = -1;
+            let targetLetter = '';
+            
+            for (let i = 0; i < bersihAsal.length; i++) {
+                if (bersihPerkataan[i] !== bersihAsal[i]) {
+                    charIndexBersih = i;
+                    targetLetter = bersihAsal[i];
+                    break;
+                }
+            }
+            
+            if (charIndexBersih === -1) {
+                charIndexBersih = bersihAsal.length - 1;
+                targetLetter = bersihAsal[charIndexBersih];
+            }
+
+            let charCount = 0;
+            let splitIndex = -1;
+            for (let i = 0; i < asal.length; i++) {
+                if (!asal[i].match(/[\u064B-\u065F]/)) {
+                    if (charCount === charIndexBersih) {
+                        splitIndex = i;
+                        break;
+                    }
+                    charCount++;
+                }
+            }
+
+            if (splitIndex === -1) splitIndex = asal.length - 1;
+            
+            let part1 = asal.substring(0, splitIndex);
+            let part2 = asal.substring(splitIndex + 1);
+            
+            return { letter: targetLetter, part1: part1, part2: part2 };
+        }
+        // -------------------------------------
+
         function loadQuestion() {
             const questionData = currentQuestions[currentQuestionIndex];
             
@@ -550,10 +900,16 @@
             jazarEl.classList.remove('opacity-100', 'scale-100');
             document.getElementById('show-clue-btn').classList.remove('hidden');
             
-            const stem = questionData.Asal.slice(0, -1);
-            document.getElementById('word-stem').innerText = stem;
+            // --- PECAH PERKATAAN UNTUK LETAK KOTAK DI TENGAH/AWAL/AKHIR ---
+            const splitData = getSplitData(questionData.Perkataan, questionData.Asal);
+            
+            document.getElementById('word-stem').innerText = splitData.part1;
+            document.getElementById('word-stem-left').innerText = splitData.part2;
             
             const dropZone = document.getElementById('dropzone');
+            dropZone.dataset.targetLetter = splitData.letter; 
+            // ----------------------------------------------------------------
+
             dropZone.innerHTML = '<span class="pb-3 sm:pb-4">؟</span> <div class="absolute inset-0 bg-emerald-400/30 rounded-xl opacity-0 scale-50 transition-all duration-300" id="dropzone-glow"></div>';
             dropZone.className = 'w-20 h-24 sm:w-24 sm:h-28 border-4 border-dashed border-gray-400 rounded-2xl flex items-center justify-center bg-white/50 text-gray-300 transition-all duration-300 z-10 font-bold relative shadow-sm text-5xl sm:text-6xl';
             dropZone.style.transform = 'scale(1)';
@@ -688,9 +1044,10 @@
 
         function checkAnswer(droppedLetter, originX, originY) {
             const questionData = currentQuestions[currentQuestionIndex];
-            const targetLetter = questionData.Asal.slice(-1); 
             
             const dropZone = document.getElementById('dropzone');
+            const targetLetter = dropZone.dataset.targetLetter; 
+
             const feedbackEl = document.getElementById('feedback');
             const explanationBox = document.getElementById('explanation-box');
             const nextBtn = document.getElementById('next-btn');
@@ -712,7 +1069,7 @@
                 createExplosion(originX, originY);
                 
                 dropZone.innerHTML = `<span class="relative z-10 pb-3 sm:pb-4">${droppedLetter}</span>`;
-                dropZone.className = 'w-20 h-24 sm:w-24 sm:h-28 border-4 border-emerald-500 rounded-2xl flex items-center justify-center bg-emerald-100 text-emerald-800 transition-all duration-300 mt-2 font-black shadow-[0_0_20px_rgba(16,185,129,0.5)] text-5xl sm:text-6xl';
+                dropZone.className = 'w-20 h-24 sm:w-24 sm:h-28 flex-shrink-0 border-4 border-emerald-500 rounded-2xl flex items-center justify-center bg-emerald-100 text-emerald-800 transition-all duration-300 mt-2 font-black shadow-[0_0_20px_rgba(16,185,129,0.5)] text-5xl sm:text-6xl';
                 dropZone.style.animation = 'snapIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
                 
                 feedbackEl.innerHTML = `
